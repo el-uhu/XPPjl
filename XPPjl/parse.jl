@@ -29,6 +29,7 @@ function toOdeFile(M::Model)
     for s in M.spec
         file *= "@ " * s[1] * "=" * string(s[2]) *"\n"
     end
+    file *= "done \n"
     f = open(M.name, "w")
     write(f, file)
     close(f)
@@ -68,7 +69,7 @@ function parseOdeFile(f::IOStream, modelname::String)
     vars = []
     for l in eachline(f)
         l = split(string(l), "\n")[1];
-        if length(l) < 3 || l[1] == '#' || contains(l, "aux ")
+        if length(l) < 3 || l[1] == '#' || contains(l, "aux ")  || contains(l, "done")
             #comment or empty line: do nothing
             #both auxilliary and algebraic equation treated as the same
         elseif l[1:2] == "p "
