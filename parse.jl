@@ -2,6 +2,10 @@ export toOdeFile, fromOdeFile, parseOutputFile
 
 @doc doc"""
 Function for writing a Model-instance to an .ode file
+
+    toOdeFile(ModelInstance)
+
+...will write the model instance to an ode file with the name ModelInstance.name
 """->
 function toOdeFile(M::Model)
     file = "#" * M.name * "\n#generated using XPPjl\n\n#ODEs:\n"
@@ -37,12 +41,22 @@ end
 
 @doc doc"""
 High-level routine for generating a model instance from an existing .ode-file
+
+    ModelName = fromOdeFile(\"odeFilenameAsString.ode\")
+
 Syntax requirements:
-- parameters are specified with the 'p '-prefix
-- settings are specified with the '@ '-prefix
-- initial conditions are specified with the 'init '-prefix
-- every line can only contain a single specification, i.e. no concatentation of multiple parameter/initial/setting specifiactions in a single line
-- auxilliary variables are ignored unless specified as algebraic variables!
+
+    - odes are specified with \' instead of dVar/dt
+
+    - parameters are specified with the 'p '-prefix
+
+    - settings are specified with the '@ '-prefix
+
+    - initial conditions are specified with the 'init '-prefix
+
+    - every line can only contain a single specification, i.e. no concatentation of multiple parameter/initial/setting specifiactions in a single line
+
+    - auxilliary variables are ignored unless specified as algebraic variables!
 """->
 function fromOdeFile(filename::String)
      f = open(filename)
@@ -54,11 +68,18 @@ end
 
 @doc doc"""
 Function for parsing .ode files that obey the following rules:
-- parameters are specified with the 'p '-prefix
-- settings are specified with the '@ '-prefix
-- initial conditions are specified with the 'init '-prefix
-- every line can only contain a single specification, i.e. no concatentation of multiple parameter/initial/setting specifiactions in a single line
-- auxilliary variables are ignored unless specified as algebraic variables!
+
+    - odes are specified with \' instead of dVar/dt
+
+    - parameters are specified with the 'p '-prefix
+
+    - settings are specified with the '@ '-prefix
+
+    - initial conditions are specified with the 'init '-prefix
+
+    - every line can only contain a single specification, i.e. no concatentation of multiple parameter/initial/setting specifiactions in a single line
+
+    - auxilliary variables are ignored unless specified as algebraic variables!
 """->
 function parseOdeFile(f::IOStream, modelname::String)
     odes = Dict()
@@ -112,6 +133,8 @@ end
 
 @doc doc"""
 Parse output file and store it as new SimulationData-instance in the Model.sims-dict
+
+    SimulationDataInstance = parseOutputFile(file-IOstream, ModelInstance)
 """->
 function parseOutputFile(f::IOStream, M::Model)
     #Get the new key for the dict

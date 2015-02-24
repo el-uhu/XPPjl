@@ -2,6 +2,8 @@ export runSimulation
 
 @doc doc"""
 Function for running a simulation from the current model definition and parsing the output data into new SimulationData-structure
+
+    ModelInstance = runsimulation(ModelInstance)
 """->
 function runSimulation(M::Model)
     # Save current version of mpdel to odefile

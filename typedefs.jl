@@ -7,6 +7,14 @@ Minimal requirement: Dict of odes, dict of initial conditions, dict of parameter
 Auxilliary equations or algebraic equations are both by default.
 Provides interface for reading from an ode file, writing the model to an ode file.
 Furthermore the model, along with simulations can be stored in, and loaded from a json file
+
+Instantiation:
+
+    ModelName = Model(odeDict, initialConditionsDict, parameterDict, modelName)
+
+    ModelName = Model(odeDict, initialConditionsDict, parameterDict, modelName, auxDict)
+
+    ModelName = Model(odeDict, initialConditionsDict, parameterDict, modelName, auxDict, settingsDict)
 """->
 type Model
     odes::Dict #Dict that stores the odes
@@ -38,6 +46,10 @@ end
 
 @doc doc"""
 Custom type SimulationData serves as a datastructure to store data from timecourse simulations along with the initial conditions and the parameterset used in the simulation
+
+Instantiation:
+
+    D = SimulationData(initialConditionsDict, parameterDict, dataDict)
 """->
 type SimulationData
     I::Dict

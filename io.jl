@@ -3,6 +3,8 @@ using JSON
 
 @doc doc"""
 Function to save a model instance to a jsonFile
+
+    saveModel(ModelName, \"jsonFilenameAsString.json\")
 """->
 function saveModel(M::Model, jsonFile::String)
     # Save a Dict as json file
@@ -14,8 +16,6 @@ end
 @doc doc"""
 Function to load a model instance from a json file
 
-
-Useage:
     M = loadModel(\"jsonFilenameAsString.json\")
 """->
 function loadModel(jsonFile::String)
