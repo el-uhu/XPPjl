@@ -1,6 +1,17 @@
 # XPPjl
 Julia interface for XPPAut
 
+###Functionality
+* Represent models as flexible custom data types in julia
+* Simulate models using XPPAuto
+* Store simulation data in easily accessible and well-defined way
+* Save models along with simulations (data + parameters) as json files
+* Import saved models
+
+###Planned features
+* AUTO integration
+
+
 ###Structure of the module
 
 * `XPP.jl` - main module file for module `XPP` , wraps around the following components
