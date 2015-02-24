@@ -1,4 +1,4 @@
-export toOdeFile, fromOdeFile, parse
+export toOdeFile, fromOdeFile, parseOutputFile
 
 @doc doc"""
 Function for writing a Model-instance to an .ode file
