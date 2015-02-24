@@ -1,7 +1,7 @@
 module XPP
 
-include("XPPjl/typedefs.jl")
-include("XPPjl/parse.jl")
-include("XPPjl/run.jl")
+include("typedefs.jl")
+include("parse.jl")
+include("run.jl")
 
 end
