@@ -136,9 +136,14 @@ Parse output file and store it as new SimulationData-instance in the Model.sims-
 
     SimulationDataInstance = parseOutputFile(file-IOstream, ModelInstance)
 """->
-function parseOutputFile(f::IOStream, M::Model)
-    #Get the new key for the dict
-    k = length(M.sims) + 1
+function parseOutputFile(f::IOStream, M::Model, overwrite = false)
+    if overwrite == false
+        #Get the new key for the dict
+        k = length(M.sims) + 1
+    else
+        #Overwrite the last simulation
+        k = length(M.sims)
+    end
     #Instantiate new SimulationData-structure
     M.sims[k] = SimulationData(M)
     #loop over lines in file
