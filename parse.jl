@@ -142,7 +142,7 @@ function parseOutputFile(f::IOStream, M::Model, overwrite = false)
         k = length(M.sims) + 1
     else
         #Overwrite the last simulation
-        k = length(M.sims)
+        k = max(1,length(M.sims))
     end
     #Instantiate new SimulationData-structure
     M.sims[k] = SimulationData(M)
