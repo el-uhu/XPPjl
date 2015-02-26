@@ -12,10 +12,9 @@ function runSimulation!(M::Model, overwrite = false)
     M.vars = getVariables(M)
     #Run the simulation
     odefile = M.name
-    run(`xppaut $odefile -silent`)
+    run(`xppaut $odefile -silent -logfile log.txt`)
     #Open and parse output file into new SimulationData-structure
     f = open("output.dat")
     M = parseOutputFile(f, M, overwrite)
     close(f)
-    return(M)
 end
