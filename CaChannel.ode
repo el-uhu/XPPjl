@@ -14,7 +14,7 @@ aux icaf=icaf
 
 #Parameters:
 p gca=4.0
-p c=20.0
+p c=10.0
 p v2=18.0
 p v1=-1.2
 p vl=-60.0

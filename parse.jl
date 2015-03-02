@@ -46,7 +46,7 @@ High-level routine for generating a model instance from an existing .ode-file
 
 Syntax requirements:
 
-    - odes are specified with \' instead of dVar/dt
+    - odes are specified with ' instead of dVar/dt
 
     - parameters are specified with the 'p '-prefix
 
