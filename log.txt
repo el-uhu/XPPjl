@@ -5,7 +5,7 @@ ICAF = icaf
 Parameters:
 |gca|=4.000000 
 Parameters:
-|c|=10.000000 
+|c|=20.000000 
 Parameters:
 |v2|=18.000000 
 Parameters:

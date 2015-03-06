@@ -1,5 +1,7 @@
 export toOdeFile, fromOdeFile, parseOutputFile
 
+newline = os[OS_NAME].newline
+
 @doc doc"""
 Function for writing a Model-instance to an .ode file
 
@@ -8,32 +10,32 @@ Function for writing a Model-instance to an .ode file
 ...will write the model instance to an ode file with the name ModelInstance.name
 """->
 function toOdeFile(M::Model)
-    file = "#" * M.name * "\n#generated using XPPjl\n\n#ODEs:\n"
+    file = "#" * M.name * newline * "#generated using XPPjl" * newline * newline * "#ODEs:$newline"
     for r in M.odes
-        file *= r[1] * "\'=" * r[2] * "\n"
+        file *= r[1] * "\'=" * r[2] * newline
     end
     #Algebraic equation automatically also auxvars
-    file *= "\n\n#Algebraic and auxilliary equations:\n"
+    file *= newline * newline * "#Algebraic and auxilliary equations:" * newline
     for a in M.aux
-        file *=  a[1] * "=" * a[2] * "\n"
-        file *= "aux " * a[1] * "=" * a[1] * "\n"
+        file *=  a[1] * "=" * a[2] * newline
+        file *= "aux " * a[1] * "=" * a[1] * newline
     end
     #Parameters
-    file *= "\n\n#Parameters:\n"
+    file *= newline * newline * "#Parameters:\n"
     for p in M.pars
-        file *= "p " * p[1] * "=" * string(p[2]) *"\n"
+        file *= "p " * p[1] * "=" * string(p[2]) *newline
     end
     #Initials
-    file *= "\n\n#Initials:\n"
+    file *= newline * newline * "#Initials:\n"
     for i in M.init
-        file *= "init " * i[1] * "=" * string(i[2]) *"\n"
+        file *= "init " * i[1] * "=" * string(i[2]) *newline
     end
     #Settings
-    file *= "\n\n#Settings:\n"
+    file *= newline * newline * "#Settings:\n"
     for s in M.spec
-        file *= "@ " * s[1] * "=" * string(s[2]) *"\n"
+        file *= "@ " * s[1] * "=" * string(s[2]) *newline
     end
-    file *= "done \n"
+    file *= "done" * newline
     f = open(M.name, "w")
     write(f, file)
     close(f)
@@ -89,7 +91,7 @@ function parseOdeFile(f::IOStream, modelname::String)
     spec = Dict()
     vars = []
     for l in eachline(f)
-        l = split(string(l), "\n")[1];
+        l = split(string(l), newline)[1];
         if length(l) < 3 || l[1] == '#' || contains(l, "aux ")  || contains(l, "done")
             #comment or empty line: do nothing
             #both auxilliary and algebraic equation treated as the same
@@ -97,13 +99,13 @@ function parseOdeFile(f::IOStream, modelname::String)
             #parameter
             parts = split(l, "=")
             name = parts[1][3:end]
-            value = float(parts[2])
+            value = float(parts[2:end])
             pars[name] = value
         elseif l[1:5] == "init "
             #initial condition
             parts = split(l, "=")
             name = parts[1][6:end]
-            value = float(parts[2])
+            value = float(parts[2:end])
             init[name] = value
         elseif l[1:2] == "@ "
             #method specification
