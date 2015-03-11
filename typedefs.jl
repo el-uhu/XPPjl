@@ -58,8 +58,8 @@ type SimulationData
     D::Dict
 end
 function SimulationData(M::Model)
-    I = M.init
-    P = M.pars
-    D = Dict([v => [] for v in M.vars])
+    I = deepcopy(M.init)
+    P = deepcopy(M.pars)
+    D = deepcopy(Dict([v => [] for v in M.vars]))
     return(SimulationData(I, P, D))
 end
