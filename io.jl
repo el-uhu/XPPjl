@@ -22,7 +22,7 @@ function loadModel(jsonFile::String)
     # Save a Dict as json file
     f = open(jsonFile, "r")
     D = JSON.parse(f)
-    Sims = Dict([k => SimulationData(D["sims"][k]["P"],D["sims"][k]["I"], D["sims"][k]["D"]) for k in keys(D["sims"])])
+    Sims = Dict([k => SimulationData(D["sims"][k]["I"], D["sims"][k]["P"], D["sims"][k]["D"]) for k in keys(D["sims"])])
     close(f)
     M = Model(D["odes"], D["init"], D["pars"], D["name"], D["aux"], D["spec"], D["vars"], Sims)
     return(M)
