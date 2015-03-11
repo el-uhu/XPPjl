@@ -5,7 +5,7 @@ Function for running a simulation from the current model definition and parsing 
 
     ModelInstance = runsimulation(ModelInstance)
 """->
-function runSimulation!(M::Model; overwrite = false, returnData = false)
+function runSimulation!(M::Model, name; plot = false, vars = false, xlim = false, ylim =false, colors = false, linewidth = 2)
     # Save current version of mpdel to odefile
     toOdeFile(M)
     #Update the vars list to match the order in the ode file
@@ -17,10 +17,9 @@ function runSimulation!(M::Model; overwrite = false, returnData = false)
     run(`$xppcall $odefile $options`)
     #Open and parse output file into new SimulationData-structure
     f = open("output.dat")
-    M = parseOutputFile(f, M, overwrite)
+    M = parseOutputFile(f, M, name)
     close(f)
-    if returnData
-        last = length(M.sims)
-        return(M.sims[last].D)
+    if plot
+        plotModel(M, name; pars = pars, vars = vars, xlim = xlim, ylim = ylim, colors =colors, linewidth = linewidth)
     end
 end

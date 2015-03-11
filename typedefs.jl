@@ -21,8 +21,7 @@ type Model
     init::Dict #Dict that stores the initial conditions
     pars::Dict #Dict that stores parameters
     name::String #Model name, used for writing ode, json
-    alg::Dict #algebraic eqn.
-    aux::Dict #Auxilliary eqn
+    aux::Dict #Auxilliary eqn / algebraic eqn.
     spec::Dict #settings
     vars::Array{Any,1} #Variables
     sims::Dict #Dict that stores simulations
