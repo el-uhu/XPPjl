@@ -99,13 +99,13 @@ function parseOdeFile(f::IOStream, modelname::String)
             #parameter
             parts = split(l, "=")
             name = parts[1][3:end]
-            value = float(parts[2:end])
+            value = float(parts[2])
             pars[name] = value
         elseif l[1:5] == "init "
             #initial condition
             parts = split(l, "=")
             name = parts[1][6:end]
-            value = float(parts[2:end])
+            value = float(parts[2])
             init[name] = value
         elseif l[1:2] == "@ "
             #method specification
@@ -138,13 +138,13 @@ Parse output file and store it as new SimulationData-instance in the Model.sims-
 
     SimulationDataInstance = parseOutputFile(file-IOstream, ModelInstance)
 """->
-function parseOutputFile(f::IOStream, M::Model, overwrite = false)
-    if overwrite == false
+function parseOutputFile(f::IOStream, M::Model, name = false)
+    if name == false
         #Get the new key for the dict
         k = length(M.sims) + 1
     else
         #Overwrite the last simulation
-        k = max(1,length(M.sims))
+        k = name
     end
     #Instantiate new SimulationData-structure
     M.sims[k] = SimulationData(M)
