@@ -5,7 +5,7 @@ Function for running a simulation from the current model definition and parsing 
 
     ModelInstance = runsimulation(ModelInstance)
 """->
-function runSimulation!(M::Model, name; plot = false, vars = false, xlim = false, ylim =false, colors = false, linewidth = 2)
+function runSimulation!(M::Model, name; plot = false, pars = false, vars = false, xlim = false, ylim =false, colors = false, linewidth = 2)
     # Save current version of mpdel to odefile
     toOdeFile(M)
     #Update the vars list to match the order in the ode file
