@@ -1,6 +1,10 @@
 using PyPlot
 export plotModel
 
+
+@doc doc"""
+High-level plotting routine for model simulations
+"""->
 function plotModel(M, simName; pars = false, vars = false, xlim = false, ylim =false, colors = false, linewidth = 2)
     figure()
     if pars
