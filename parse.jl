@@ -89,7 +89,7 @@ function parseOdeFile(f::IOStream, modelname::String)
     pars = Dict()
     aux = Dict()
     spec = Dict()
-    vars = []
+    vars = Any[]
     for l in eachline(f)
         l = split(string(l), newline)[1];
         if length(l) < 3 || l[1] == '#' || contains(l, "aux ")  || contains(l, "done")

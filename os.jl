@@ -8,9 +8,13 @@ type Env
     options::Array
 end
 
+if VERSION < v"0.4.0"
+    using Docile
+end
+
+
 #set os-dependent variables
-os = Dict(
-    :Linux => Env("\n", "xppaut", ["-silent",  "-logfile",  "log.txt"]),
-    :Windows => Env("\r\n", "/xppall/xppaut", ["-silent",  "-logfile",  "log.txt"]),
-    :Darwin => Env("\n", "xppaut", ["-silent",  "-logfile",  "log.txt"])
-)
+os = Dict()
+os[:Linux] = Env("\n", "xppaut", ["-silent",  "-logfile",  "log.txt"])
+os[:Windows] = Env("\r\n", "/xppall/xppaut", ["-silent",  "-logfile",  "log.txt"])
+os[:Darwin] = Env("\n", "xppaut", ["-silent",  "-logfile",  "log.txt"])

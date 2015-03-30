@@ -60,6 +60,6 @@ end
 function SimulationData(M::Model)
     I = deepcopy(M.init)
     P = deepcopy(M.pars)
-    D = deepcopy(Dict([v => [] for v in M.vars]))
+    D = deepcopy(Dict([v => Any[] for v in M.vars]))
     return(SimulationData(I, P, D))
 end

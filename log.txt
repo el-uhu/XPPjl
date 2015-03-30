@@ -17,7 +17,7 @@ Parameters:
 Parameters:
 |gl|=2.000000 
 Parameters:
-|i|=0.000000 
+|i|=1.000000 
 0:dV/dt=(I+GL*(VL-V)-ICAF)/C  
 MINF=.5*(1+TANH((V-V1)/V2))  
 minf=minf  
