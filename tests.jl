@@ -33,4 +33,15 @@ Test.with_handler(custom_handler) do
     myPlot = plotModel(M, "test1")
     plot_model = myPlot != None
     @test plot_model
+    
+    #Can we save to a json file?
+    saveModel(M, "MSave.json")
+    #size check
+    save_json = sizeof("MSave.json") != 0
+    @test save_json
+
+    #Can we load from a json file?
+    M2 = loadModel("MSave.json")
+    load_json = typeof(M2) == XPP.Model
+    @test load_json
 end
