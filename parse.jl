@@ -68,6 +68,79 @@ function fromOdeFile(filename::String)
      return(M)
 end
 
+#Parsing subfunctions
+type ParsedLine
+    b::Bool
+    name::String
+    value::Any
+end
+function ignore(l)
+    b = length(l) < 3 || l[1] == '#' || contains(l, "aux ")  || contains(l, "done")
+    name = ""
+    value = ""
+    return(ParsedLine(b, name, value))
+end
+
+function parameter(l)
+    b = l[1:2] == "p "
+    name = ""
+    value = ""
+    if b
+        parts = split(l, "=")
+        name = parts[1][3:end]
+        value = float(parts[2])
+    end
+    return(ParsedLine(b, name, value))
+end
+
+function initial(l)
+    b = l[1:5] == "init "
+    name = ""
+    value = ""
+    if b
+        parts = split(l, "=")
+        name = parts[1][6:end]
+        value = float(parts[2])
+    end
+    return(ParsedLine(b, name, value))
+end
+
+function method(l)
+    b = l[1:2] == "@ "
+    name = ""
+    value = ""
+    if b
+        parts = split(l, "=")
+        name = parts[1][3:end]
+        value = parts[2]
+    end
+    return(ParsedLine(b, name, value))
+end
+
+function variable(l)
+    b = (l, "=")[1][end] == '\''
+    name = ""
+    value = ""
+    if b
+        parts = split(l, "=")
+        name = parts[1][1:end-1]
+        value = parts[2]
+    end
+    return(ParsedLine(b, name, value))
+end
+
+function auxilliary(l)
+    b = true
+    parts = split(l, "=")
+    name = parts[1]
+    value = parts[2]
+    return(ParsedLine(b, name, value))
+end
+
+function algebraic(l)
+    return(ParsedLine(b, name, value))
+end
+
 @doc doc"""
 Function for parsing .ode files that obey the following rules:
 
@@ -92,41 +165,21 @@ function parseOdeFile(f::IOStream, modelname::String)
     vars = Any[]
     for l in eachline(f)
         l = split(string(l), newline)[1];
-        if length(l) < 3 || l[1] == '#' || contains(l, "aux ")  || contains(l, "done")
+        if ignore(l).b
             #comment or empty line: do nothing
             #both auxilliary and algebraic equation treated as the same
-        elseif l[1:2] == "p "
-            #parameter
-            parts = split(l, "=")
-            name = parts[1][3:end]
-            value = float(parts[2])
-            pars[name] = value
-        elseif l[1:5] == "init "
-            #initial condition
-            parts = split(l, "=")
-            name = parts[1][6:end]
-            value = float(parts[2])
-            init[name] = value
-        elseif l[1:2] == "@ "
-            #method specification
-            parts = split(l, "=")
-            name = parts[1][3:end]
-            value = parts[2]
-            spec[name] = value
-        elseif split(l, "=")[1][end] == '\''
-            #variable
-            parts = split(l, "=")
-            name = parts[1][1:end-1]
-            push!(vars, name)
-            value = parts[2]
-            odes[name] = value
+        elseif parameter(l).b
+            pars[parameter(l).name] = parameter(l).value
+        elseif initial(l).b
+            init[initial(l).name] = initial(l).value
+        elseif method(l).b
+            spec[method(l).name] = method(l).value
+        elseif variable(l).b
+            push!(vars, variable(l).name)
+            odes[variable(l).name] = variable(l).value
         else
-            #auxilliary variable
-            parts = split(l, "=")
-            name = parts[1]
-            push!(vars, name)
-            value = parts[2]
-            aux[name] = value
+            push!(vars, auxilliary(l).name)
+            aux[auxilliary(l).name] = auxilliary(l).value
         end
     end
     M = Model(odes, init, pars, modelname, aux, spec, vars)

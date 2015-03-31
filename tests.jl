@@ -7,10 +7,12 @@ custom_handler(r::Test.Failure) = error("test failed: $(r.expr)")
 custom_handler(r::Test.Error)   = rethrow(r)
 
 Test.with_handler(custom_handler) do
+
     #Does the Module load properly?
     M = fromOdeFile("CaChannel.ode")
     loading_model = typeof(M) == XPP.Model
     @test loading_model
+
 
     #Can we run a simulation?
     runSimulation!(M, "test1")
@@ -29,8 +31,10 @@ Test.with_handler(custom_handler) do
     correct_storage_pars = M.sims["test1"].P[selected_parameter] != M.sims["test2"].P[selected_parameter]
     @test correct_storage_pars
 
+
     #Can we produce a plot?
     myPlot = plotModel(M, "test1")
     plot_model = myPlot != None
     @test plot_model
+
 end

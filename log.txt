@@ -1,5 +1,6 @@
 MINF = .5*(1+TANH((V-V1)/V2))   
 MINF = minf   
+V' = v'   
 ICAF = GCA*MINF*(V-VCA)   
 ICAF = icaf   
 Parameters:
@@ -7,25 +8,20 @@ Parameters:
 Parameters:
 |c|=3.167942 
 Parameters:
-|v2|=15.270048 
+|v2|=0.075624 
 Parameters:
 |v1|=-1.200000 
 Parameters:
 |vl|=-60.000000 
 Parameters:
-|vca|=52.601615 
+|vca|=7.127359 
 Parameters:
 |gl|=1.777553 
 Parameters:
 |i|=0.763552 
-0:dV/dt=(I+GL*(VL-V)-ICAF)/C  
 MINF=.5*(1+TANH((V-V1)/V2))  
 minf=minf  
-ICAF=GCA*MINF*(V-VCA)  
-icaf=icaf  
- Initial V(0)=-60
- All formulas are valid!!
- nvar=1 naux=2 nfix=2 nmark=0 NEQ=3 NODE=5 
-Used 14 constants and 115 symbols 
-XPPAUT 6.11 Copyright (C) 2002-2011  Bard Ermentrout 
- Run complete ... 
+0:dV/dt=(I+GL*(VL-V)-ICAF)/C  
+V'
+ ^
+ERROR compiling v' 
