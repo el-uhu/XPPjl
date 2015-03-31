@@ -1,11 +1,12 @@
 using Base.Test
-using PyPlot
 using XPP
 
+#Define custom handlers to get consone-output in the event of a successful test
 custom_handler(r::Test.Success) = println("Success on $(r.expr)")
 custom_handler(r::Test.Failure) = error("test failed: $(r.expr)")
 custom_handler(r::Test.Error)   = rethrow(r)
 
+#Run test suite
 Test.with_handler(custom_handler) do
 
     #Does the Module load properly?
