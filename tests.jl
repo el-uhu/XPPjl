@@ -14,6 +14,13 @@ Test.with_handler(custom_handler) do
     loading_model = typeof(M) == XPP.Model
     @test loading_model
 
+    #Is the modelstructure correct?
+    #..i.e. do keys of odes-Dict and init-Dict match up?
+    keys_ode = sort([k for k in keys(M.odes)])
+    keys_init = sort([k for k in keys(M.init)])
+    match_odes_init = keys_ode == keys_init
+    @test match_odes_init
+
 
     #Can we run a simulation?
     runSimulation!(M, "test1")
@@ -38,15 +45,21 @@ Test.with_handler(custom_handler) do
     plot_model = myPlot != None
     @test plot_model
 
+
     #Can we save to a json file?
     saveModel(M, "MSave.json")
-    #size checkd 
+    #size checkd
     save_json = sizeof("MSave.json") != 0
     @test save_json
+
 
     #Can we load from a json file?
     M2 = loadModel("MSave.json")
     load_json = typeof(M2) == XPP.Model
     @test load_json
+
+    #Cleanup
+    run(`rm MSave.json`)
+
 
 end

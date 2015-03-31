@@ -18,14 +18,15 @@ type Model
     init::Dict #Dict that stores the initial conditions
     pars::Dict #Dict that stores parameters
     name::String #Model name, used for writing ode, json
-    aux::Dict #Auxilliary eqn / algebraic eqn.
+    aux::Dict #Auxilliary eqn
+    alg::Dict #Algebraic eqn.
     spec::Dict #settings
     vars::Array{Any,1} #Variables
     sims::Dict #Dict that stores simulations
 end
 
 #Instantiate model from minimal set of definitions (odes, initials, parameters, name)
-Model(odes::Dict, init::Dict, pars::Dict; name = "myModel.ode", aux = Dict(), spec = Dict(), vars = [], sims = Dict()) = Model(odes, init, pars, name, aux, spec, vars, sims)
+Model(odes::Dict, init::Dict, pars::Dict; name = "myModel", aux = Dict(), alg = Dict(), spec = Dict(), vars = [], sims = Dict()) = Model(odes, init, pars, name, aux, alg, spec, vars, sims)
 
 @doc doc"""
 Simple function to  obtain a list of dynamical and auxilliary variables, which determines the handling of simulation data
