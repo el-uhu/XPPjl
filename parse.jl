@@ -205,7 +205,7 @@ function parseOdeFile(f::IOStream, modelname::String)
             aux[auxilliary(l).name] = auxilliary(l).value
         end
     end
-    M = Model(odes, init, pars, modelname, aux, spec, vars)
+    M = Model(odes, init, pars; name = modelname, aux = aux, spec = spec, vars = vars)
     return(M)
 end
 

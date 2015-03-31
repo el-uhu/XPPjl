@@ -40,7 +40,7 @@ Test.with_handler(custom_handler) do
 
     #Can we save to a json file?
     saveModel(M, "MSave.json")
-    #size check
+    #size checkd 
     save_json = sizeof("MSave.json") != 0
     @test save_json
 

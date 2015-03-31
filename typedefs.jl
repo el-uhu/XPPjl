@@ -26,14 +26,9 @@ type Model
     vars::Array{Any,1} #Variables
     sims::Dict #Dict that stores simulations
 end
-#Instantiate model from minimal set of definitions (odes, initials, parameters, name)
-Model(odes::Dict, init::Dict, pars::Dict, name::String) = Model(odes, init, pars, name*".ode", Dict(), Dict(), [], Dict())
-#...instantiate from minimal set of definitions +auxilliary equations
-Model(odes::Dict, init::Dict, pars::Dict, name::String, aux::Dict) = Model(odes, init, pars, name*".ode", aux, Dict(), [], Dict())
-#...instantiate from minimal set of definitions + auxilliary equations + specifications
-Model(odes::Dict, init::Dict, pars::Dict, name::String, aux::Dict, spec::Dict) = Model(odes, init, pars, name*".ode", aux, spec, [], Dict())
 
-Model(odes::Dict, init::Dict, pars::Dict, name::String, aux::Dict, spec::Dict, vars::Array) = Model(odes, init, pars, name*".ode", aux, spec, vars, Dict())
+#Instantiate model from minimal set of definitions (odes, initials, parameters, name)
+Model(odes::Dict, init::Dict, pars::Dict; name = "myModel.ode", aux = Dict(), spec = Dict(), vars = [], sims = Dict()) = Model(odes, init, pars, name, aux, spec, vars, sims)
 
 @doc doc"""
 Simple function to  obtain a list of dynamical and auxilliary variables, which determines the handling of simulation data
