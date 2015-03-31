@@ -2,6 +2,12 @@ export toOdeFile, fromOdeFile, parseOutputFile
 
 newline = os[OS_NAME].newline
 
+#-------------------------------------------------------------------------------
+#
+#                       Parsing XPPjl-model to ODE-file
+#
+#-------------------------------------------------------------------------------
+
 @doc doc"""
 Function for writing a Model-instance to an .ode file
 
@@ -41,6 +47,10 @@ function toOdeFile(M::Model)
     close(f)
 end
 
+#-------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
+
+
 @doc doc"""
 High-level routine for generating a model instance from an existing .ode-file
 
@@ -68,7 +78,17 @@ function fromOdeFile(filename::String)
      return(M)
 end
 
-#Parsing subfunctions
+#-------------------------------------------------------------------------------
+#
+#                       Parsing ODE-file to XPPjl
+#
+#-------------------------------------------------------------------------------
+
+
+
+#                       Parsing subfunctions
+#-------------------------------------------------------------------------------
+
 type ParsedLine
     b::Bool
     name::String
@@ -141,6 +161,9 @@ function algebraic(l)
     return(ParsedLine(b, name, value))
 end
 
+#                       High-level routine
+#-------------------------------------------------------------------------------
+
 @doc doc"""
 Function for parsing .ode files that obey the following rules:
 
@@ -186,6 +209,17 @@ function parseOdeFile(f::IOStream, modelname::String)
     return(M)
 end
 
+#-------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
+
+
+#-------------------------------------------------------------------------------
+#
+#                       Parsing Output-file to XPPjl
+#
+#-------------------------------------------------------------------------------
+
+
 @doc doc"""
 Parse output file and store it as new SimulationData-instance in the Model.sims-dict
 
@@ -215,3 +249,6 @@ function parseOutputFile(f::IOStream, M::Model, name = false)
     end
     return(M)
 end
+
+#-------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------

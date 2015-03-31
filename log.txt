@@ -8,11 +8,11 @@ Parameters:
 Parameters:
 |c|=3.167942 
 Parameters:
-|v2|=0.075624 
+|v2|=0.060399 
 Parameters:
 |v1|=-1.200000 
 Parameters:
-|vl|=-60.000000 
+|vl|=-35.912259 
 Parameters:
 |vca|=7.127359 
 Parameters:
