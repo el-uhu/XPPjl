@@ -10,11 +10,8 @@ Furthermore the model, along with simulations can be stored in, and loaded from 
 
 Instantiation:
 
-    ModelName = Model(odeDict, initialConditionsDict, parameterDict, modelName)
+    ModelName = Model(odeDict, initialConditionsDict, parameterDict; modelName = "myName", ...)
 
-    ModelName = Model(odeDict, initialConditionsDict, parameterDict, modelName, auxDict)
-
-    ModelName = Model(odeDict, initialConditionsDict, parameterDict, modelName, auxDict, settingsDict)
 """->
 type Model
     odes::Dict #Dict that stores the odes
