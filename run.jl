@@ -11,7 +11,7 @@ function runSimulation!(M::Model, name; plot = false, pars = false, vars = false
     #Update the vars list to match the order in the ode file
     M.vars = getVariables(M)
     #Run the simulation
-    odefile = M.name
+    odefile = M.name * ".ode"
     xppcall = os[OS_NAME].xppcall
     options = os[OS_NAME].options
     run(`$xppcall $odefile $options`)

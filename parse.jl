@@ -22,9 +22,11 @@ function toOdeFile(M::Model)
     end
     #Algebraic equation automatically also auxvars
     file *= newline * newline * "#Algebraic and auxilliary equations:" * newline
-    for a in M.aux
+    for a in M.alg
         file *=  a[1] * "=" * a[2] * newline
-        file *= "aux " * a[1] * "=" * a[1] * newline
+    end
+    for x in M.aux
+        file *= "aux " * x[1] * "=" * x[1] * newline
     end
     #Parameters
     file *= newline * newline * "#Parameters:\n"
@@ -42,7 +44,7 @@ function toOdeFile(M::Model)
         file *= "@ " * s[1] * "=" * string(s[2]) *newline
     end
     file *= "done" * newline
-    f = open(M.name, "w")
+    f = open(M.name * ".ode", "w")
     write(f, file)
     close(f)
 end
@@ -68,11 +70,10 @@ Syntax requirements:
 
     - every line can only contain a single specification, i.e. no concatentation of multiple parameter/initial/setting specifiactions in a single line
 
-    - auxilliary variables are ignored unless specified as algebraic variables!
 """->
 function fromOdeFile(filename::String)
      f = open(filename)
-     name = split(filename, ".ode")[1]
+     name = split(filename, ".ode")[1] * "_xppjl"
      M = parseOdeFile(f, name)
      close(f)
      return(M)
@@ -138,7 +139,7 @@ function method(l)
 end
 
 function variable(l)
-    b = (l, "=")[1][end] == '\''
+    b = split(l, "=")[1][end] == '\''
     name = ""
     value = ""
     if b
@@ -150,14 +151,26 @@ function variable(l)
 end
 
 function auxilliary(l)
-    b = true
-    parts = split(l, "=")
-    name = parts[1]
-    value = parts[2]
+    b = l[1:4] == "aux "
+    name = ""
+    value = ""
+    if b
+        parts = split(l, "=")
+        name = parts[1]
+        value = parts[2]
+    end
     return(ParsedLine(b, name, value))
 end
 
 function algebraic(l)
+    b = length(split(l, "=")) == 2
+    name = ""
+    value = ""
+    if b
+        parts = split(l, "=")
+        name = parts[1]
+        value = parts[2]
+    end
     return(ParsedLine(b, name, value))
 end
 
@@ -177,13 +190,13 @@ Function for parsing .ode files that obey the following rules:
 
     - every line can only contain a single specification, i.e. no concatentation of multiple parameter/initial/setting specifiactions in a single line
 
-    - auxilliary variables are ignored unless specified as algebraic variables!
 """->
 function parseOdeFile(f::IOStream, modelname::String)
     odes = Dict()
     init = Dict()
     pars = Dict()
     aux = Dict()
+    alg =Dict()
     spec = Dict()
     vars = Any[]
     for l in eachline(f)
@@ -200,12 +213,14 @@ function parseOdeFile(f::IOStream, modelname::String)
         elseif variable(l).b
             push!(vars, variable(l).name)
             odes[variable(l).name] = variable(l).value
-        else
+        elseif auxilliary(l).b
             push!(vars, auxilliary(l).name)
             aux[auxilliary(l).name] = auxilliary(l).value
+        elseif algebraic(l).b
+            alg[algebraic(l).name] = algebraic(l).value
         end
     end
-    M = Model(odes, init, pars; name = modelname, aux = aux, spec = spec, vars = vars)
+    M = Model(odes, init, pars; name = modelname, aux = aux, alg = alg, spec = spec, vars = vars)
     return(M)
 end
 
