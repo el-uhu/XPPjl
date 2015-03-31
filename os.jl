@@ -8,11 +8,6 @@ type Env
     options::Array
 end
 
-if VERSION < v"0.4.0"
-    using Docile
-end
-
-
 #set os-dependent variables
 os = Dict()
 os[:Linux] = Env("\n", "xppaut", ["-silent",  "-logfile",  "log.txt"])

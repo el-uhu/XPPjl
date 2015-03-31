@@ -3,21 +3,21 @@ MINF = minf
 ICAF = GCA*MINF*(V-VCA)   
 ICAF = icaf   
 Parameters:
-|gca|=4.000000 
+|gca|=2.704944 
 Parameters:
-|c|=20.000000 
+|c|=3.167942 
 Parameters:
-|v2|=18.000000 
+|v2|=15.270048 
 Parameters:
 |v1|=-1.200000 
 Parameters:
 |vl|=-60.000000 
 Parameters:
-|vca|=120.000000 
+|vca|=52.601615 
 Parameters:
-|gl|=2.000000 
+|gl|=1.777553 
 Parameters:
-|i|=1.000000 
+|i|=0.763552 
 0:dV/dt=(I+GL*(VL-V)-ICAF)/C  
 MINF=.5*(1+TANH((V-V1)/V2))  
 minf=minf  
