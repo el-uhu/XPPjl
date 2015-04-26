@@ -10,5 +10,6 @@ include("parse.jl")
 include("run.jl")
 include("io.jl")
 include("plot.jl")
+include("utils.jl")
 
 end

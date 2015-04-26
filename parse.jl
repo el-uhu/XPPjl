@@ -75,6 +75,7 @@ function fromOdeFile(filename::String)
      f = open(filename)
      name = split(filename, ".ode")[1] * "_xppjl"
      M = parseOdeFile(f, name)
+     M.originalState = Dict(:pars => deepcopy(M.pars), :init => deepcopy(M.init), :spec => deepcopy(M.spec))
      close(f)
      return(M)
 end
@@ -120,7 +121,7 @@ function initial(l)
     value = ""
     if b
         parts = split(l, "=")
-        name = parts[1][6:end]
+        name = parts[1][7:end]
         value = float(parts[2])
     end
     return(ParsedLine(b, name, value))
