@@ -26,7 +26,7 @@ function toOdeFile(M::Model)
         file *=  a[1] * "=" * a[2] * newline
     end
     for x in M.aux
-        file *= "aux " * x[1] * "=" * x[1] * newline
+        file *= "aux " * x[1] * "=" * x[2] * newline
     end
     #Parameters
     file *= newline * newline * "#Parameters:\n"
@@ -96,7 +96,7 @@ type ParsedLine
     value::Any
 end
 function ignore(l)
-    b = length(l) < 3 || l[1] == '#' || contains(l, "aux ")  || contains(l, "done")
+    b = length(l) < 3 || l[1] == '#' || contains(l, "done")
     name = ""
     value = ""
     return(ParsedLine(b, name, value))
@@ -156,7 +156,7 @@ function auxilliary(l)
     value = ""
     if b
         parts = split(l, "=")
-        name = parts[1]
+        name = split(parts[1], "aux ")[2]
         value = parts[2]
     end
     return(ParsedLine(b, name, value))
