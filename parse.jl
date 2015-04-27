@@ -75,7 +75,7 @@ function fromOdeFile(filename::String)
      f = open(filename)
      name = split(filename, ".ode")[1] * "_xppjl"
      M = parseOdeFile(f, name)
-     M.originalState = Dict(:pars => deepcopy(M.pars), :init => deepcopy(M.init), :spec => deepcopy(M.spec))
+     M.originalState = Dict([:pars => deepcopy(M.pars), :init => deepcopy(M.init), :spec => deepcopy(M.spec)])
      close(f)
      return(M)
 end
@@ -202,6 +202,7 @@ function parseOdeFile(f::IOStream, modelname::String)
     vars = Any[]
     for l in eachline(f)
         l = split(string(l), newline)[1];
+        l = split(l, "\r")[1]
         if ignore(l).b
             #comment or empty line: do nothing
             #both auxilliary and algebraic equation treated as the same
