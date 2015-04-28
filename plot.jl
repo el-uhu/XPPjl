@@ -5,8 +5,10 @@ export plotModel
 @doc doc"""
 High-level plotting routine for model simulations
 """->
-function plotModel(M, simName; pars = false, vars = false, xlim = false, ylim =false, colors = false, linewidth = 2)
-    figure()
+function plotModel(M, simName; pars = false, vars = false, xlim = false, ylim =false, colors = false, linewidth = 2, fig = true)
+    if fig == true
+        figure()
+    end
     if pars
         ax1 = subplot2grid([4,1], [0,0], 3, 1)
         plotModel_core(ax1, M, simName; vars = vars, xlim = xlim, ylim = ylim, colors = colors, linewidth = linewidth)
@@ -16,7 +18,9 @@ function plotModel(M, simName; pars = false, vars = false, xlim = false, ylim =f
         ax = subplot(111)
         plotModel_core(ax, M, simName; vars = vars, xlim = xlim, ylim = ylim, colors = colors, linewidth = linewidth)
     end
-    suptitle(simName)
+    if fig == true
+        suptitle(simName)
+    end
 end
 
 function plotPars(subplot, M, simName)
