@@ -121,7 +121,7 @@ function initial(l)
     value = ""
     if b
         parts = split(l, "=")
-        name = parts[1][7:end]
+        name = parts[1][6:end]
         value = float(parts[2])
     end
     return(ParsedLine(b, name, value))
