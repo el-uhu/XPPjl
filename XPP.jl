@@ -13,6 +13,9 @@ include("typedefs.jl")
 #Parse ODE-Files
 include("parse.jl")
 
+#Interface for AUTO-based bifurctaion analysis
+include("auto_interface.jl")
+
 #Write model to Auto-compatible f90-file
 include("auto_parser.jl")
 

@@ -1,10 +1,14 @@
+export parseToAUTO
+
+#Custom type to hold f90-code components
 type f90_subroutine
     name::String
     args::String
     header::String
 end
 
-function declareNumericalArguments(M)
+#Function that returns a sequence of all numerical arguments of the model
+function declareNumericalArguments(M::Model)
     declare = "\tDOUBLE PRECISION "
     for var in keys(M.odes)
         declare *= var * ", "
@@ -19,7 +23,8 @@ function declareNumericalArguments(M)
     return(declare)
 end
 
-function parseAlgs(M)
+#Parse algebraic equations
+function parseAlgs(M::Model)
     parsed = ""
     for a in keys(M.alg)
         eq = M.alg[a]
@@ -28,7 +33,8 @@ function parseAlgs(M)
     return(parsed)
 end
 
-function parseVars(M)
+#Parse Variables (declaration)
+function parseVars(M::Model)
     parsed = ""
     for var in enumerate(keys(M.odes))
         var_name = var[2]
@@ -38,7 +44,8 @@ function parseVars(M)
     return(parsed)
 end
 
-function parseVarsPt(M, values)
+#Parse singular point solutions for variables
+function parseVarsPt(M::Model, values)
     parsed = ""
     for var in enumerate(keys(M.odes))
         var_i = var[1]
@@ -48,7 +55,8 @@ function parseVarsPt(M, values)
     return(parsed)
 end
 
-function parsePars(M)
+#Parse parameters (declaration)
+function parsePars(M::Model)
     parsed = ""
     for par in enumerate(keys(M.pars))
         par_name = par[2]
@@ -58,7 +66,8 @@ function parsePars(M)
     return(parsed)
 end
 
-function parseParsPt(M)
+#Parse parameter set corresponding to singular point solutions
+function parseParsPt(M::Model)
     parsed = ""
     for par in enumerate(keys(M.pars))
         par_i = par[1]
@@ -68,6 +77,7 @@ function parseParsPt(M)
     return(parsed)
 end
 
+#Assemble f90 subroutines (generic)
 function assembleSubroutine(routine::f90_subroutine, body::String)
     name = routine.name
     args = routine.args
@@ -81,7 +91,8 @@ function assembleSubroutine(routine::f90_subroutine, body::String)
     return(R)
 end
 
-function parseSubroutine(routine_name, header_table, M, values)
+#Assemble subroutines specifically
+function parseSubroutine(routine_name, header_table, M::Model, values)
     if routine_name == "FUNC"
         body = "\n" * declareNumericalArguments(M) * "\n" * parseAlgs(M) * "\n" *  parseVars(M) * "\n" * parsePars(M)
     elseif routine_name == "STPNT"
@@ -92,8 +103,9 @@ function parseSubroutine(routine_name, header_table, M, values)
     return(assembleSubroutine(header_table[routine_name], body))
 end
 
-function parseToAUTO(M, values, header_table)
-    parsed = "!-------------------\n !\tGenerated with XPPjl\n"
+#Top-level wrapper function for parsing model to f90-file
+function parseToAUTO(M::Model, values, header_table = f90_header_table)
+    parsed = "!--------------------------------------\n!\tGenerated with XPPjl\n!--------------------------------------\n\n"
     for routine_name in keys(header_table)
         parsed *= parseSubroutine(routine_name, header_table, M, values) * "\n\n"
     end
@@ -102,9 +114,19 @@ function parseToAUTO(M, values, header_table)
     print(parsed)
     write(f, parsed)
     close(f)
+
+    #Make parameter file
+    pars = ""
+    for p in keys(M.auto_specs)
+        pars *= p * String(M.auto_specs[p]) * ", "
+    end
+    println(pars)
+    f = open("c."*model_name, "w")
+    write(f, pars)
+    close(f)
 end
 
-fortranHF = Dict([
+f90_header_table= Dict([
     "FUNC" => f90_subroutine(
         "FUNC",
         "NDIM,U,ICP,PAR,IJAC,F,DFDU,DFDP",

@@ -24,10 +24,11 @@ type Model
     vars::Array{Any,1} #Variables
     sims::Dict #Dict that stores simulations
     originalState::Dict #Store original state of model
+    auto_specs::Dict#Store Parameters required for running AUTO
 end
 
 #Instantiate model from minimal set of definitions (odes, initials, parameters, name)
-Model(odes::Dict, init::Dict, pars::Dict; name = "myModel", aux = Dict(), alg = Dict(), spec = Dict(), vars = [], sims = Dict(), originalState = Dict()) = Model(odes, init, pars, name, aux, alg, spec, vars, sims, originalState)
+Model(odes::Dict, init::Dict, pars::Dict; name = "myModel", aux = Dict(), alg = Dict(), spec = Dict(), vars = [], sims = Dict(), originalState = Dict(), auto_specs = auto_default_specs) = Model(odes, init, pars, name, aux, alg, spec, vars, sims, originalState, auto_specs)
 
 @doc doc"""
 Simple function to  obtain a list of dynamical and auxilliary variables, which determines the handling of simulation data
