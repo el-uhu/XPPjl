@@ -118,7 +118,7 @@ function parseToAUTO(M::Model, values, header_table = f90_header_table)
     #Make parameter file
     pars = ""
     for p in keys(M.auto_specs)
-        pars *= p * String(M.auto_specs[p]) * ", "
+        pars *= p * "= " * string(M.auto_specs[p]) * ", "
     end
     println(pars)
     f = open("c."*model_name, "w")

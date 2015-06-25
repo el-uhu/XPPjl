@@ -1,5 +1,6 @@
-export Model, SimulationData, getVariables
+export Model, SimulationData, getVariables, show
 
+import Base.show
 
 @doc doc"""
 Custom type Model, used for specifying dynamical systems model to be simulated using XPP.
@@ -40,6 +41,52 @@ function getVariables(M::Model)
     return(v)
 end
 
+function show(io::IO, M::Model)
+    println(M.name)
+    println("-"^60)
+    println("ODES:")
+    for var in keys(M.odes)
+        println("\t$var = ", M.odes[var])
+    end
+    if length(M.alg) > 0
+        println("-"^60)
+        println("ALGEBRAIC EQUATIONS:")
+        for alg in keys(M.alg)
+            println("\t$alg = ", M.alg[alg])
+        end
+    end
+    if length(M.aux) > 0
+        println("-"^60)
+        println("AUXILLIARY VARIABLES:")
+        for aux in keys(M.aux)
+            println("\t$aux = ", M.aux[aux])
+        end
+    end
+    println("-"^60)
+    println("INITIALS:")
+    for var in keys(M.init)
+        println("\t$var:\t", M.init[var])
+    end
+    println("-"^60)
+    println("PARAMETERS:")
+    for par in keys(M.pars)
+        println("\t$par:", alignSpace(par, 15), M.pars[par])
+    end
+    println("-"^60)
+    println("SETTINGS:")
+    for spec in keys(M.spec)
+        println("\t$spec:\t", M.spec[spec])
+    end
+    if length(M.sims) > 0
+        println("-"^60)
+        println("SIMULATIONS:")
+        for sim in keys(M.sims)
+            println("\t$sim")
+        end
+    end
+    println("="^60)
+end
+
 @doc doc"""
 Custom type SimulationData serves as a datastructure to store data from timecourse simulations along with the initial conditions and the parameterset used in the simulation
 
@@ -57,4 +104,9 @@ function SimulationData(M::Model)
     P = deepcopy(M.pars)
     D = deepcopy(Dict([v => Any[] for v in M.vars]))
     return(SimulationData(I, P, D))
+end
+
+function alignSpace(myString::String, maxSpace)
+    n = 40 - length(myString)
+    return(" "^n)
 end

@@ -53,19 +53,19 @@ auto_default_specs = Dict([
 # individual parameters in the definition of stepsize. For this purpose, THL defines the parameters
 # whose weight is to be modified. If THL={} then all weights will have default value 1.0, else one
 # must enter pairs, {Parameter Index : Weight, ...} .
-"THL" => Dict([]),
+"THL" => "",
 # Under certain circumstances one may want to modify the weight accorded to individual state
 # variables (or state functions) in the definition of stepsize. For this purpose, THU defines the
 # number of states whose weight is to be modified. If THU={} then all weights will have default
 # value 1.0, else one must enter pairs, {State Index : Weight, ...} . At present none of the demos
 # use this option.
-"THU" => Dict([]),
+"THU" => "",
 # This constant adds stopping conditions. It is specified as a list of bifurcation type strings fol-
 # lowed by a number n greater than zero. These strings specify that the contination should stop
 # as soon as the nth bifurcation of the associated type has been reached. Example:
 # STOP=[’HB3’,’UZ3’] Stop at the third Hopf bifurcation or third user defined point (see Sec-
 # tion 10.9.11), whichever comes first.
-"STOP" => [],
+"STOP" => "[]",
 #The maximum number of steps to be taken along any family.
 "NMX" =>200,
 # The lower bound on the principal continuation parameter. (This is the parameter which appears
@@ -87,7 +87,7 @@ function stringFromTerminal()
     return(split(readline(STDIN), "\n")[1])
 end
 
-function getReadyForAuto!(M::Model, specs = auto_default_specs, interactive = true)
+function getReadyForAuto!(M::Model; specs = auto_default_specs, interactive = true, sol = None)
     M.auto_specs = auto_default_specs
     M.auto_specs["NDIM"] = length(M.odes)
     M.auto_specs["NPAR"] = minimum([length(M.pars), 36])
@@ -110,6 +110,9 @@ function getReadyForAuto!(M::Model, specs = auto_default_specs, interactive = tr
         M.auto_specs["DSMIN"] = floatFromTerminal()
         println("Maximum stepsize (DSMAX, absolute value)?")
         M.auto_specs["DSMAX"] = floatFromTerminal()
+    end
+    if sol != None
+        parseToAUTO(M, sol)
     end
     return(M)
 end
