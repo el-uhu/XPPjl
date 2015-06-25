@@ -95,15 +95,35 @@ Instantiation:
     D = SimulationData(initialConditionsDict, parameterDict, dataDict)
 """->
 type SimulationData
+    N::String
     I::Dict
     P::Dict
     D::Dict
 end
-function SimulationData(M::Model)
+function SimulationData(M::Model, name)
+    N = name
     I = deepcopy(M.init)
     P = deepcopy(M.pars)
     D = deepcopy(Dict([v => Any[] for v in M.vars]))
-    return(SimulationData(I, P, D))
+    return(SimulationData(N, I, P, D))
+end
+
+function show(io::IO, S::SimulationData)
+    println(S.N)
+    println("-"^60)
+    println("INITIALS:")
+    for var in keys(S.I)
+        println("\t$var:\t", S.I[var])
+    end
+    println("-"^60)
+    println("PARAMETERS:")
+    for par in keys(S.P)
+        println("\t$par:", alignSpace(par, 15), S.P[par])
+    end
+    println("-"^60)
+    println("DATA:")
+    println("\tt_max:\t", S.D["t"][end])
+    println("="^60)
 end
 
 function alignSpace(myString::String, maxSpace)

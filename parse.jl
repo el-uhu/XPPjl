@@ -251,7 +251,7 @@ function parseOutputFile(f::IOStream, M::Model, name = false)
         k = name
     end
     #Instantiate new SimulationData-structure
-    M.sims[k] = SimulationData(M)
+    M.sims[k] = SimulationData(M, name)
     #loop over lines in file
     for l in eachline(f)
         #Remove newline and space at the end of each line
