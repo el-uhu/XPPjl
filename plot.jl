@@ -5,18 +5,18 @@ export plotModel
 @doc doc"""
 High-level plotting routine for model simulations
 """->
-function plotModel(M, simName; pars = false, vars = false, xlim = false, ylim =false, colors = false, linewidth = 2, fig = true, alpha = 1)
+function plotModel(M, simName; t = "t", pars = false, vars = false, xlim = false, ylim =false, colors = false, linewidth = 2, fig = true, alpha = 1)
     if fig == true
         figure()
     end
     if pars
         ax1 = subplot2grid([4,1], [0,0], 3, 1)
-        plotModel_core(ax1, M, simName; vars = vars, xlim = xlim, ylim = ylim, colors = colors, linewidth = linewidth, alpha = alpha)
+        plotModel_core(ax1, M, simName; t = t, vars = vars, xlim = xlim, ylim = ylim, colors = colors, linewidth = linewidth, alpha = alpha)
         ax2 = subplot2grid([4,1], [3,0], 1, 1)
         plotPars(ax2, M, simName)
     else
         ax = subplot(111)
-        plotModel_core(ax, M, simName; vars = vars, xlim = xlim, ylim = ylim, colors = colors, linewidth = linewidth, alpha = alpha)
+        plotModel_core(ax, M, simName; t = t, vars = vars, xlim = xlim, ylim = ylim, colors = colors, linewidth = linewidth, alpha = alpha)
     end
     if fig == true
         suptitle(simName)
@@ -42,16 +42,16 @@ function plotPars(subplot, M, simName)
     # subplot[:set_yticklabels](names)
 end
 
-function plotModel_core(subplot, M, simName; vars = false, xlim = false, ylim =false, colors = false, linewidth = 2, alpha = 1)
+function plotModel_core(subplot, M, simName; t = "t", vars = false, xlim = false, ylim =false, colors = false, linewidth = 2, alpha = 1)
     D = M.sims[simName].D
     if vars == false
         vars = M.vars[2:end]
     end
     for v in vars
         if colors == false
-            plot(D["t"], D[v], linewidth = linewidth, alpha = alpha)
+            plot(D[t], D[v], linewidth = linewidth, alpha = alpha)
         else
-            plot(D["t"], D[v], color = colors[v], linewidth = linewidth, alpha = alpha)
+            plot(D[t], D[v], color = colors[v], linewidth = linewidth, alpha = alpha)
         end
     end
     xlabel("t (min)")

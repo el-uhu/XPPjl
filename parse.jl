@@ -140,7 +140,7 @@ function method(l)
 end
 
 function variable(l)
-    b = split(l, "=")[1][end] == '\''
+    b = contains(split(l, "=")[1], "\'")
     name = ""
     value = ""
     if b
@@ -164,13 +164,13 @@ function auxilliary(l)
 end
 
 function algebraic(l)
-    b = length(split(l, "=")) == 2
+    b = length(split(l, "=")) >= 2
     name = ""
     value = ""
     if b
         parts = split(l, "=")
         name = parts[1]
-        value = parts[2]
+        value = split(l, name*"=")[2]
     end
     return(ParsedLine(b, name, value))
 end
