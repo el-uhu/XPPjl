@@ -22,4 +22,8 @@ function runSimulation!(M::Model, name; plot = false, pars = false, vars = false
     if plot
         plotModel(M, name; pars = pars, vars = vars, xlim = xlim, ylim = ylim, colors =colors, linewidth = linewidth)
     end
+    run(`rm output.dat`)
+    n = M.name
+    run(`rm $n.ode`)
+    run(`rm log.txt`)
 end
