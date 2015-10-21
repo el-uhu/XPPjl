@@ -1,7 +1,7 @@
 export getReadyForAuto!
 
 
-auto_default_specs = Dict([
+auto_default_specs = Dict(
 # Dimension of the system of equations as specified in the user-supplied routine FUNC
 "NDIM" => 0,
 # The number of boundary conditions as specified in the user-supplied routine BCND.
@@ -77,7 +77,7 @@ auto_default_specs = Dict([
 "A0" =>0,
 # The upper bound on the principal solution measure.
 "A1" =>0,
-])
+)
 
 function floatFromTerminal()
     return(float(split(readline(STDIN), "\n")[1]))

@@ -42,7 +42,7 @@ Test.with_handler(custom_handler) do
 
     #Can we produce a plot?
     myPlot = plotModel(M, "test1")
-    plot_model = myPlot != None
+    plot_model = myPlot != Union{}
     @test plot_model
 
 

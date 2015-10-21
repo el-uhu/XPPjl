@@ -2,7 +2,7 @@ export Model, SimulationData, getVariables, show
 
 import Base.show
 
-@doc doc"""
+"""
 Custom type Model, used for specifying dynamical systems model to be simulated using XPP.
 Minimal requirement: Dict of odes, dict of initial conditions, dict of parameters, model name.
 Auxilliary equations or algebraic equations are both by default.
@@ -13,12 +13,12 @@ Instantiation:
 
     ModelName = Model(odeDict, initialConditionsDict, parameterDict; modelName = "myName", ...)
 
-"""->
+"""
 type Model
     odes::Dict #Dict that stores the odes
     init::Dict #Dict that stores the initial conditions
     pars::Dict #Dict that stores parameters
-    name::String #Model name, used for writing ode, json
+    name::AbstractString #Model name, used for writing ode, json
     aux::Dict #Auxilliary eqn
     alg::Dict #Algebraic eqn.
     spec::Dict #settings
@@ -31,9 +31,9 @@ end
 #Instantiate model from minimal set of definitions (odes, initials, parameters, name)
 Model(odes::Dict, init::Dict, pars::Dict; name = "myModel", aux = Dict(), alg = Dict(), spec = Dict(), vars = [], sims = Dict(), originalState = Dict(), auto_specs = auto_default_specs) = Model(odes, init, pars, name, aux, alg, spec, vars, sims, originalState, auto_specs)
 
-@doc doc"""
+"""
 Simple function to  obtain a list of dynamical and auxilliary variables, which determines the handling of simulation data
-"""->
+"""
 function getVariables(M::Model)
     v = ["t"]
     append!(v,[k for k in keys(M.odes)])
@@ -87,15 +87,15 @@ function show(io::IO, M::Model)
     println("="^60)
 end
 
-@doc doc"""
+"""
 Custom type SimulationData serves as a datastructure to store data from timecourse simulations along with the initial conditions and the parameterset used in the simulation
 
 Instantiation:
 
     D = SimulationData(initialConditionsDict, parameterDict, dataDict)
-"""->
+"""
 type SimulationData
-    N::String
+    N::AbstractString
     I::Dict
     P::Dict
     D::Dict
@@ -126,7 +126,7 @@ function show(io::IO, S::SimulationData)
     println("="^60)
 end
 
-function alignSpace(myString::String, maxSpace)
+function alignSpace(myString::AbstractString, maxSpace)
     n = 40 - length(myString)
     return(" "^n)
 end

@@ -1,10 +1,10 @@
 export Env, os
-@doc doc"""
-Custom type to store os-environment sensitive parameters and commands
-"""->
+"""
+Custom type to store *os-environment sensitive parameters* and commands
+"""
 type Env
-    newline::String
-    xppcall::String
+    newline::AbstractString
+    xppcall::AbstractString
     options::Array
 end
 

@@ -2,9 +2,9 @@ export parseToAUTO
 
 #Custom type to hold f90-code components
 type f90_subroutine
-    name::String
-    args::String
-    header::String
+    name::AbstractString
+    args::AbstractString
+    header::AbstractString
 end
 
 #Function that returns a sequence of all numerical arguments of the model
@@ -78,7 +78,7 @@ function parseParsPt(M::Model)
 end
 
 #Assemble f90 subroutines (generic)
-function assembleSubroutine(routine::f90_subroutine, body::String)
+function assembleSubroutine(routine::f90_subroutine, body::AbstractString)
     name = routine.name
     args = routine.args
     header = routine.header
@@ -126,7 +126,7 @@ function parseToAUTO(M::Model, values, header_table = f90_header_table)
     close(f)
 end
 
-f90_header_table= Dict([
+f90_header_table= Dict(
     "FUNC" => f90_subroutine(
         "FUNC",
         "NDIM,U,ICP,PAR,IJAC,F,DFDU,DFDP",
@@ -148,4 +148,4 @@ f90_header_table= Dict([
     "ICND" => f90_subroutine("ICND", "", ""),
     "FOPT" => f90_subroutine("FOPT", "", ""),
     "PVLS" => f90_subroutine("PVLS", "", ""),
-    ])
+    )

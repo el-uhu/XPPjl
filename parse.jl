@@ -8,13 +8,13 @@ newline = os[OS_NAME].newline
 #
 #-------------------------------------------------------------------------------
 
-@doc doc"""
+"""
 Function for writing a Model-instance to an .ode file
 
     toOdeFile(ModelInstance)
 
 ...will write the model instance to an ode file with the name ModelInstance.name
-"""->
+"""
 function toOdeFile(M::Model)
     file = "#" * M.name * newline * "#generated using XPPjl" * newline * newline * "#ODEs:$newline"
     for r in M.odes
@@ -53,7 +53,7 @@ end
 #-------------------------------------------------------------------------------
 
 
-@doc doc"""
+"""
 High-level routine for generating a model instance from an existing .ode-file
 
     ModelName = fromOdeFile(\"odeFilenameAsString.ode\")
@@ -70,12 +70,12 @@ Syntax requirements:
 
     - every line can only contain a single specification, i.e. no concatentation of multiple parameter/initial/setting specifiactions in a single line
 
-"""->
-function fromOdeFile(filename::String)
+"""
+function fromOdeFile(filename::AbstractString)
      f = open(filename)
      name = split(filename, ".ode")[1] * "_xppjl"
      M = parseOdeFile(f, name)
-     M.originalState = Dict([:pars => deepcopy(M.pars), :init => deepcopy(M.init), :spec => deepcopy(M.spec)])
+     M.originalState = Dict(:pars => deepcopy(M.pars), :init => deepcopy(M.init), :spec => deepcopy(M.spec))
      close(f)
      return(M)
 end
@@ -93,7 +93,7 @@ end
 
 type ParsedLine
     b::Bool
-    name::String
+    name::AbstractString
     value::Any
 end
 function ignore(l)
@@ -178,7 +178,7 @@ end
 #                       High-level routine
 #-------------------------------------------------------------------------------
 
-@doc doc"""
+"""
 Function for parsing .ode files that obey the following rules:
 
     - odes are specified with \' instead of dVar/dt
@@ -191,8 +191,8 @@ Function for parsing .ode files that obey the following rules:
 
     - every line can only contain a single specification, i.e. no concatentation of multiple parameter/initial/setting specifiactions in a single line
 
-"""->
-function parseOdeFile(f::IOStream, modelname::String)
+"""
+function parseOdeFile(f::IOStream, modelname::AbstractString)
     odes = Dict()
     init = Dict()
     pars = Dict()
@@ -237,11 +237,11 @@ end
 #-------------------------------------------------------------------------------
 
 
-@doc doc"""
+"""
 Parse output file and store it as new SimulationData-instance in the Model.sims-dict
 
     SimulationDataInstance = parseOutputFile(file-IOstream, ModelInstance)
-"""->
+"""
 function parseOutputFile(f::IOStream, M::Model, name = false)
     if name == false
         #Get the new key for the dict
