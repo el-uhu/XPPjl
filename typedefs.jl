@@ -4,12 +4,14 @@ import Base.show
 
 global t,y,p
 
-function vectorise_model(odes::Dict, pars::Dict, alg::Dict, init::Dict)
+function vectorise_model(odes::Dict, pars::Dict, alg::Dict, init::Dict, aux::Dict)
   v_odes = [v for (k,v) in odes]
   var_names = AbstractString[]
   y0 = Float64[]
   par_names = AbstractString[]
   par_values = Float64[]
+  v_aux = [v for (k,v) in aux]
+  a_names = [k for (k,v) in aux]
 
   #Get parameter list
   for (n,p) in enumerate(keys(pars))
@@ -17,11 +19,12 @@ function vectorise_model(odes::Dict, pars::Dict, alg::Dict, init::Dict)
     par_values = [par_values; pars[p]]
   end
 
+  #Vectorise odes
   for (i,k) in enumerate(keys(odes))
     var_names = [var_names; k]
-    #Substitute algrabraics
+    #Substitute algebraics
     for (n,p) in enumerate(keys(alg))
-      v_odes[i] = replace(v_odes[i], Regex("\\b" * p * "\\b"), "$(alg[p])")
+      v_odes[i] = replace(v_odes[i], Regex("\\b" * p * "\\b"), "($(alg[p]))")
     end
     #Substitute parameters
     for (n,p) in enumerate(keys(pars))
@@ -35,9 +38,28 @@ function vectorise_model(odes::Dict, pars::Dict, alg::Dict, init::Dict)
     y0 = [y0; init[k]]
   end
 
+  #Vectorise auxs
+  for (i,k) in enumerate(a_names)
+    #Substitute algebraics
+    for (n,p) in enumerate(keys(alg))
+      v_aux[i] = replace(v_aux[i], Regex("\\b" * p * "\\b"), "($(alg[p]))")
+    end
+    #Substitute parameters
+    for (n,p) in enumerate(keys(pars))
+      v_aux[i] = replace(v_aux[i], Regex("\\b" * p * "\\b"), "p[$n]")
+    end
+    #Substitute variable names
+    for (n,p) in enumerate(keys(odes))
+      v_aux[i] = replace(v_aux[i], Regex("\\b" * p * "\\b"), "y[$n]")
+    end
+  end
+
+  v_aux = [eval(parse("a_$i" * "(t,y,p) = " * v )) for (i,v) in enumerate(v_aux)]
+  A(t,y,p) = Float64[ai(t,y,p) for ai in v_aux]
+
   v_odes = [eval(parse("y_$i" * "(t,y,p) = " * v )) for (i,v) in enumerate(v_odes)]
   F(t,y,p) = Float64[yi(t,y,p) for yi in v_odes]
-  return(F, var_names, y0, par_names, par_values)
+  return(F, var_names, A, a_names, y0, par_names, par_values)
 end
 
 
@@ -65,6 +87,8 @@ type Model
     sims::Dict #Dict that stores simulations
     F::Function
     y_names::Array{AbstractString,1}
+    A::Function
+    a_names::Array{AbstractString,1}
     y0::Array{Float64,1}
     p_names::Array{AbstractString,1}
     p::Array{Float64,1}
@@ -77,8 +101,8 @@ function Model(odes::Dict, init::Dict, pars::Dict; name = "myModel", aux = Dict(
                alg = Dict(), spec = Dict(), vars = [], sims = Dict(),
                originalState = Dict(), auto_specs = auto_default_specs)
 
-  F, y_names, y0, p_names, p = vectorise_model(odes, pars, alg, init)
-  return Model(odes, init, pars, name, aux, alg, spec, vars, sims, F, y_names, y0, p_names, p, originalState, auto_specs)
+  F, y_names, A, a_names, y0, p_names, p = vectorise_model(odes, pars, alg, init, aux)
+  return Model(odes, init, pars, name, aux, alg, spec, vars, sims, F, y_names, A, a_names,y0, p_names, p, originalState, auto_specs)
 end
 
 

@@ -65,5 +65,13 @@ function parseODEOutput(t, ysim, M::Model, name)
     for (i,y) in enumerate(M.y_names)
       M.sims[k].D[y] = [y[i] for y in ysim]
     end
+
+    # aux_data = 
+    for (i,a) in enumerate(M.a_names)
+      M.sims[k].D[a] = zeros(length(t))
+      for (ix,ti) in enumerate(t)
+        M.sims[k].D[a][ix] = M.A(t, ysim[ix], M.p)[i]
+      end
+    end
     return(M)
 end
