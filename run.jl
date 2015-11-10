@@ -1,4 +1,4 @@
-export runSimulation!
+export runSimulation!, simulate!
 
 @doc doc"""
 Function for running a simulation from the current model definition and parsing the output data into new SimulationData-structure
@@ -26,4 +26,35 @@ function runSimulation!(M::Model, name; plot = false, pars = false, vars = false
     n = M.name
     run(`rm $n.ode`)
     run(`rm log.txt`)
+end
+
+
+function simulate!(M::Model, name, trange; plot = false, pars = false, vars = false, xlim = false, ylim =false, colors = false, linewidth = 2)
+    #Update parameters
+    p = Float64[M.pars[p] for p in M.p_names]
+    y0 = Float64[M.init[y] for y in M.y_names]
+    F(t,y) = M.F(t, y, p)
+    t,y = ode23s(F, y0, trange)
+    if plot != false
+        plotModel(M, name; pars = pars, vars = vars, xlim = xlim, ylim = ylim, colors =colors, linewidth = linewidth)
+    end
+    M = parseOde23sOutputFile(t, y, M, name)
+    return(M)
+end
+
+function parseOde23sOutputFile(t, ysim, M::Model, name)
+    if name == false
+        #Get the new key for the dict
+        k = length(M.sims) + 1
+    else
+        #Overwrite the last simulation
+        k = name
+    end
+    #Instantiate new SimulationData-structure
+    M.sims[k] = SimulationData(M, name)
+    M.sims[k].D["t"] = t
+    for (i,y) in enumerate(M.y_names)
+      M.sims[k].D[y] = [y[i] for y in ysim]
+    end
+    return(M)
 end

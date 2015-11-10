@@ -1,7 +1,9 @@
 packages = [
+    "PyCall",
     "PyPlot",
     "JSON",
-    "Docile"
+    "Docile",
+    "ODE"
     ]
 
 Pkg.init()

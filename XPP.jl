@@ -1,4 +1,5 @@
 module XPP
+using ODE
 
 if VERSION < v"0.4.0"
     using Docile

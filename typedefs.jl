@@ -2,6 +2,45 @@ export Model, SimulationData, getVariables, show
 
 import Base.show
 
+global t,y,p
+
+function vectorise_model(odes::Dict, pars::Dict, alg::Dict, init::Dict)
+  v_odes = [v for (k,v) in odes]
+  var_names = AbstractString[]
+  y0 = Float64[]
+  par_names = AbstractString[]
+  par_values = Float64[]
+
+  #Get parameter list
+  for (n,p) in enumerate(keys(pars))
+    par_names = [par_names; p]
+    par_values = [par_values; pars[p]]
+  end
+
+  for (i,k) in enumerate(keys(odes))
+    var_names = [var_names; k]
+    #Substitute algrabraics
+    for (n,p) in enumerate(keys(alg))
+      v_odes[i] = replace(v_odes[i], Regex("\\b" * p * "\\b"), "$(alg[p])")
+    end
+    #Substitute parameters
+    for (n,p) in enumerate(keys(pars))
+      v_odes[i] = replace(v_odes[i], Regex("\\b" * p * "\\b"), "p[$n]")
+    end
+    #Substitute variable names
+    for (n,p) in enumerate(keys(odes))
+      v_odes[i] = replace(v_odes[i], Regex("\\b" * p * "\\b"), "y[$n]")
+    end
+    # Add initial
+    y0 = [y0; init[k]]
+  end
+
+  v_odes = [eval(parse("y_$i" * "(t,y,p) = " * v )) for (i,v) in enumerate(v_odes)]
+  F(t,y,p) = Float64[yi(t,y,p) for yi in v_odes]
+  return(F, var_names, y0, par_names, par_values)
+end
+
+
 """
 Custom type Model, used for specifying dynamical systems model to be simulated using XPP.
 Minimal requirement: Dict of odes, dict of initial conditions, dict of parameters, model name.
@@ -24,12 +63,24 @@ type Model
     spec::Dict #settings
     vars::Array{Any,1} #Variables
     sims::Dict #Dict that stores simulations
+    F::Function
+    y_names::Array{AbstractString,1}
+    y0::Array{Float64,1}
+    p_names::Array{AbstractString,1}
+    p::Array{Float64,1}
     originalState::Dict #Store original state of model
     auto_specs::Dict#Store Parameters required for running AUTO
 end
-
+vectorise_model(M::Model) = vectorise_model(M.odes, M.pars, M.alg, M.init)
 #Instantiate model from minimal set of definitions (odes, initials, parameters, name)
-Model(odes::Dict, init::Dict, pars::Dict; name = "myModel", aux = Dict(), alg = Dict(), spec = Dict(), vars = [], sims = Dict(), originalState = Dict(), auto_specs = auto_default_specs) = Model(odes, init, pars, name, aux, alg, spec, vars, sims, originalState, auto_specs)
+function Model(odes::Dict, init::Dict, pars::Dict; name = "myModel", aux = Dict(),
+               alg = Dict(), spec = Dict(), vars = [], sims = Dict(),
+               originalState = Dict(), auto_specs = auto_default_specs)
+
+  F, y_names, y0, p_names, p = vectorise_model(odes, pars, alg, init)
+  return Model(odes, init, pars, name, aux, alg, spec, vars, sims, F, y_names, y0, p_names, p, originalState, auto_specs)
+end
+
 
 """
 Simple function to  obtain a list of dynamical and auxilliary variables, which determines the handling of simulation data
