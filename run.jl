@@ -28,21 +28,30 @@ function runSimulation!(M::Model, name; plot = false, pars = false, vars = false
     run(`rm log.txt`)
 end
 
-
-function simulate!(M::Model, name, trange; plot = false, pars = false, vars = false, xlim = false, ylim =false, colors = false, linewidth = 2)
+"""
+Simulate the system using ODE.jl package
+"""
+function simulate!(M::Model, name, trange; solver = ode23s, plot = false, pars = false, vars = false, xlim = false, ylim =false, colors = false, linewidth = 2)
     #Update parameters
     p = Float64[M.pars[p] for p in M.p_names]
+    #Update initials
     y0 = Float64[M.init[y] for y in M.y_names]
+    #Convert F into necessary form (only dependent on t and y)
     F(t,y) = M.F(t, y, p)
-    t,y = ode23s(F, y0, trange)
+    #Uses ode23s by default for other available solver consult ODE module: https://github.com/JuliaLang/ODE.jl
+    t,y = solver(F, y0, trange)
     if plot != false
         plotModel(M, name; pars = pars, vars = vars, xlim = xlim, ylim = ylim, colors =colors, linewidth = linewidth)
     end
-    M = parseOde23sOutputFile(t, y, M, name)
+    #Retrieve results
+    M = parseODEOutput(t, y, M, name)
     return(M)
 end
 
-function parseOde23sOutputFile(t, ysim, M::Model, name)
+"""
+Get vectorised output and store it in SimulationData structure
+"""
+function parseODEOutput(t, ysim, M::Model, name)
     if name == false
         #Get the new key for the dict
         k = length(M.sims) + 1
