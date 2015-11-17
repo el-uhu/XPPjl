@@ -33,13 +33,16 @@ Simulate the system using ODE.jl package
 """
 function simulate!(M::Model, name, trange; solver = ode23s, plot = false, pars = false, vars = false, xlim = false, ylim =false, colors = false, linewidth = 2)
     #Update parameters
-    p = Float64[M.pars[p] for p in M.p_names]
+    M.p = Float64[M.pars[p] for p in M.p_names]
     #Update initials
-    y0 = Float64[M.init[y] for y in M.y_names]
+    M.y0 = Float64[M.init[y] for y in M.y_names]
     #Convert F into necessary form (only dependent on t and y)
-    F(t,y) = M.F(t, y, p)
+    # for (i,n) in enumerate(M.p_names)
+    #   println(n, "\t", p[i])
+    # end
+    F(t,y) = M.F(t, y, M.p)
     #Uses ode23s by default for other available solver consult ODE module: https://github.com/JuliaLang/ODE.jl
-    t,y = solver(F, y0, trange)
+    t,y = solver(F, M.y0, trange)
     if plot != false
         plotModel(M, name; pars = pars, vars = vars, xlim = xlim, ylim = ylim, colors =colors, linewidth = linewidth)
     end
@@ -66,11 +69,13 @@ function parseODEOutput(t, ysim, M::Model, name)
       M.sims[k].D[y] = [y[i] for y in ysim]
     end
 
-    # aux_data = 
     for (i,a) in enumerate(M.a_names)
       M.sims[k].D[a] = zeros(length(t))
-      for (ix,ti) in enumerate(t)
-        M.sims[k].D[a][ix] = M.A(t, ysim[ix], M.p)[i]
+    end
+    for (ix,ti) in enumerate(t)
+      algs = M.A(ti, ysim[ix], M.p)
+      for (i,a) in enumerate(M.a_names)
+        M.sims[k].D[a][ix] = deepcopy(algs[i])
       end
     end
     return(M)

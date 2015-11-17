@@ -54,6 +54,10 @@ function vectorise_model(odes::Dict, pars::Dict, alg::Dict, init::Dict, aux::Dic
     end
   end
 
+  println("Vectorisation of model")
+  println(v_odes)
+  println(v_aux)
+
   v_aux = [eval(parse("a_$i" * "(t,y,p) = " * v )) for (i,v) in enumerate(v_aux)]
   A(t,y,p) = Float64[ai(t,y,p) for ai in v_aux]
 
@@ -179,7 +183,7 @@ function SimulationData(M::Model, name)
     N = name
     I = deepcopy(M.init)
     P = deepcopy(M.pars)
-    D = deepcopy(Dict([v => Any[] for v in M.vars]))
+    D = deepcopy(Dict([v => Float64[] for v in M.vars]))
     return(SimulationData(N, I, P, D))
 end
 
