@@ -3,6 +3,21 @@ export plotModel
 
 @doc doc"""
 High-level plotting routine for model simulations
+
+plotModel(ModelName, "simulationName")
+
+Optional arguments:
+- *t* _in stochastic simulations using Gillespie's algorithm XPP, the actual simulation time has to be calculated as an auxilliary variable_
+- *pars* Boolean, _plot parameter overview?_
+- *vars* Array, _which variable are plotted?_
+- *xlim*
+- *ylim*
+- *linewidth*
+- *alpha*
+- *colors* Dict, _[varname => "HEXVALUE"] for custom colors_
+- *fig* _default true, if true make new figure, else pass existing figure handle_
+- *sp* _subplot handle, only in conjunction with figure = false_
+
 """->
 function plotModel(M, simName; t = "t", pars = false, vars = false, xlim = false, ylim =false, colors = false, linewidth = 2, fig = true, alpha = 1, sp = false)
     if fig == true
