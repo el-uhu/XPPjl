@@ -67,9 +67,9 @@ function plotModel_core(subplot, M, simName; t = "t", vars = false, xlim = false
     end
     for v in vars
         if colors == false
-            subplot[:plot](D[t], D[v], linewidth = linewidth, alpha = alpha)
+            subplot[:plot](D[t], D[v], linewidth = linewidth, alpha = alpha, label = v)
         else
-            subplot[:plot](D[t], D[v], color = colors[v], linewidth = linewidth, alpha = alpha)
+            subplot[:plot](D[t], D[v], color = colors[v], linewidth = linewidth, alpha = alpha, label = v)
         end
     end
     subplot[:set_xlabel]("t (min)")
