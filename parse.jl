@@ -30,7 +30,7 @@ function toOdeFile(M::Model; path = "")
     end
     #Parameters
     file *= newline * newline * "#Parameters:\n"
-    for p in M.pars
+    for p in sort(collect(M.pars))
         file *= "p " * p[1] * "=" * string(p[2]) *newline
     end
     #Initials
