@@ -15,7 +15,7 @@ Function for writing a Model-instance to an .ode file
 
 ...will write the model instance to an ode file with the name ModelInstance.name
 """
-function toOdeFile(M::Model)
+function toOdeFile(M::Model; path = "")
     file = "#" * M.name * newline * "#generated using XPPjl" * newline * newline * "#ODEs:$newline"
     for r in M.odes
         file *= r[1] * "\'=" * r[2] * newline
@@ -44,7 +44,7 @@ function toOdeFile(M::Model)
         file *= "@ " * s[1] * "=" * string(s[2]) *newline
     end
     file *= "done" * newline
-    f = open(M.name * ".ode", "w")
+    f = open(joinpath(path, M.name) * ".ode", "w")
     write(f, file)
     close(f)
 end
